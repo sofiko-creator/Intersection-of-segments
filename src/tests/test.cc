@@ -265,3 +265,65 @@ int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }
+
+// Скрещивающиеся отрезки
+TEST(The_segments_do_not_intersect, Test_7) {
+  Vector3D dot1(0, 0, 0), dot2(1, 0, 0);
+  Segment3D seg1(dot1, dot2);
+
+  Vector3D dot3(0, 0, 1), dot4(0, 1, 1);
+  Segment3D seg2(dot3, dot4);
+
+  Vector3D dot_intersection;
+  bool result = seg1.Intersect(seg2, dot_intersection);
+
+  EXPECT_EQ(result, false);
+}
+
+// Скрещивающиеся отрезки
+TEST(The_segments_do_not_intersect, Test_8) {
+  Vector3D dot1(10000, 0, 0), dot2(20000, 0, 0);
+  Segment3D seg1(dot1, dot2);
+
+  Vector3D dot3(15000, -10000, 10000), dot4(15000, 20000, 10000);
+  Segment3D seg2(dot3, dot4);
+
+  Vector3D dot_intersection;
+  bool result = seg1.Intersect(seg2, dot_intersection);
+
+  EXPECT_EQ(result, false);
+}
+
+// Прямые пересекаются, но отрезки не пересекаются
+// в пределах их длин.
+TEST(The_segments_do_not_intersect, Test_10) {
+  Vector3D dot1(100, 100, 100), dot2(150, 150, 150);
+  Segment3D seg1(dot1, dot2);
+
+  Vector3D dot3(150, 150, 50), dot4(250, 250, 0);
+  Segment3D seg2(dot3, dot4);
+
+  Vector3D dot_intersection;
+  bool result = seg1.Intersect(seg2, dot_intersection);
+
+  EXPECT_EQ(result, false);
+}
+
+// Тест для проверки, что прямые, содержащие отрезки в тесте
+// "The_segments_do_not_intersect", Test_10, пересекаются
+TEST(Segments_intersect, Test_14) {
+  Vector3D dot1(100, 100, 100), dot2(0, 0, 0);
+  Segment3D seg1(dot1, dot2);
+
+  Vector3D dot3(150, 150, 50), dot4(0, 0, 125);
+  Segment3D seg2(dot3, dot4);
+
+  Vector3D dot_intersection;
+  bool result = seg1.Intersect(seg2, dot_intersection);
+  EXPECT_EQ(result, true);
+  Vector3D ans(83.33, 83.33, 83.33);
+
+  EXPECT_EQ(std::round(dot_intersection.X * 100.0) / 100.0, ans.X);
+  EXPECT_EQ(std::round(dot_intersection.Y * 100.0) / 100.0, ans.Y);
+  EXPECT_EQ(std::round(dot_intersection.Y * 100.0) / 100.0, ans.Y);
+}
